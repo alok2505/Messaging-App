@@ -4,8 +4,10 @@ const express = require('express');
 const http = require('http');
 const cors = require('cors');
 const { Server } = require('socket.io');
+const swaggerUi = require('swagger-ui-express');
 
 const connectDB = require('./src/config/db');
+const swaggerSpec = require('./src/config/swagger');
 const userRoutes = require('./src/routes/userRoutes');
 const messageRoutes = require('./src/routes/messageRoutes');
 
@@ -23,9 +25,12 @@ app.set('io', io);
 app.use(cors());
 app.use(express.json());
 
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerSpec));
+
 app.get('/', (_req, res) => {
   res.json({
     message: 'Chat backend is running',
+    documentation: '/api-docs',
     endpoints: {
       createUser: 'POST /users',
       listUsers: 'GET /users',
